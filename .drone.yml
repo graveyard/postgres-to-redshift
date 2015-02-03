@@ -1,0 +1,23 @@
+image: go1.4
+notify:
+  email:
+    recipients:
+    - drone@clever.com
+  hipchat:
+    on_failure: true
+    on_started: true
+    on_success: true
+    room: Clever-Dev-CI
+    token: {{hipchatToken}}
+publish:
+  docker:
+    branch: master
+    docker_port: 4243
+    docker_server: {{docker_server}}
+    docker_version: 0.10.0
+    email: {{docker_email}}
+    image_name: clever/postgres-to-redshift
+    password: {{docker_password}}
+    push_latest: true
+    registry_login: true
+    username: {{docker_username}}
