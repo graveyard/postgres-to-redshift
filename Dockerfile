@@ -4,7 +4,7 @@ RUN apt-get install -y curl build-essential
 RUN go get github.com/tools/godep
 
 # Gearcmd
-RUN curl -L https://github.com/Clever/gearcmd/releases/download/v0.3.1/gearcmd-v0.3.1-linux-amd64.tar.gz | tar xz -C /usr/local/bin --strip-components 1
+RUN curl -L https://github.com/Clever/gearcmd/releases/download/v0.3.3/gearcmd-v0.3.3-linux-amd64.tar.gz | tar xz -C /usr/local/bin --strip-components 1
 
 # copy source code
 RUN mkdir -p /go/src/github.com/Clever/postgres-to-redshift
