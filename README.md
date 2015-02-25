@@ -13,6 +13,7 @@ godep go run main.go \
 -redshiftuser=<user> \
 -redshiftpassword=<password> \
 -redshiftdatabase=<database> \
+-redshiftschema=<schema> \
 -postgreshost=<host> \
 -postgresdatabase=<database> \
 -postgresuser=<user> \

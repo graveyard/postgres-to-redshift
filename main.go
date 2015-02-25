@@ -12,11 +12,12 @@ import (
 )
 
 var (
-	awsRegion = env.MustGet("AWS_REGION")
-	s3prefix  = flagutil.RequiredStringFlag("s3prefix", "s3 path to be used as a prefix for temporary storage of postgres data", nil)
-	tablesCSV = flagutil.RequiredStringFlag("tables", "Tables to copy as CSV", nil)
-	dumppg    = flag.Bool("dumppostgres", true, "Whether to dump postgres")
-	updateRS  = flag.Bool("updateredshift", true, "Whether to replace redshift")
+	awsRegion      = env.MustGet("AWS_REGION")
+	s3prefix       = flagutil.RequiredStringFlag("s3prefix", "s3 path to be used as a prefix for temporary storage of postgres data", nil)
+	tablesCSV      = flagutil.RequiredStringFlag("tables", "Tables to copy as CSV", nil)
+	dumppg         = flag.Bool("dumppostgres", true, "Whether to dump postgres")
+	updateRS       = flag.Bool("updateredshift", true, "Whether to replace redshift")
+	redshiftSchema = flag.String("redshiftschema", "public", "Schema name to store the tables.")
 )
 
 func main() {
@@ -44,7 +45,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err := r.RefreshTables(tsmap, *s3prefix, awsRegion, '|'); err != nil {
+		if err := r.RefreshTables(tsmap, *redshiftSchema, *s3prefix, awsRegion, '|'); err != nil {
 			log.Fatal(err)
 		}
 		if err := r.VacuumAnalyze(); err != nil {

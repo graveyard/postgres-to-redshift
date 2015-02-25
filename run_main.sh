@@ -6,6 +6,7 @@
 -redshiftuser=$REDSHIFT_USER \
 -redshiftpassword=$REDSHIFT_PASSWORD \
 -redshiftdatabase=$REDSHIFT_DATABASE \
+-redshiftschema=$REDSHIFT_SCHEMA \
 -postgreshost=$POSTGRES_HOST \
 -postgresdatabase=$POSTGRES_DATABASE \
 -postgresuser=$POSTGRES_USER \
