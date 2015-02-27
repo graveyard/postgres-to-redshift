@@ -12,13 +12,13 @@
 		},
 		{
 			"ImportPath": "github.com/clever/redshifter/postgres",
-			"Comment": "v1.0.1-5-g14c6902",
-			"Rev": "14c6902e1962185d816991006dfe01e5fcf08eed"
+			"Comment": "v1.0.1-7-g80cdcf7",
+			"Rev": "80cdcf72f5ccc9eea0361d85e07fbe5fa961cad8"
 		},
 		{
 			"ImportPath": "github.com/clever/redshifter/redshift",
-			"Comment": "v1.0.1-5-g14c6902",
-			"Rev": "14c6902e1962185d816991006dfe01e5fcf08eed"
+			"Comment": "v1.0.1-7-g80cdcf7",
+			"Rev": "80cdcf72f5ccc9eea0361d85e07fbe5fa961cad8"
 		},
 		{
 			"ImportPath": "github.com/facebookgo/errgroup",

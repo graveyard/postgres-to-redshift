@@ -71,10 +71,11 @@ func TestRefreshTable(t *testing.T) {
 	copycmd += " ACCEPTINVCHARS TRUNCATECOLUMNS TRIMBLANKS BLANKSASNULL EMPTYASNULL DATEFORMAT 'auto' ACCEPTANYDATE COMPUPDATE ON"
 	copycmd += " CREDENTIALS 'aws_access_key_id=accesskey;aws_secret_access_key=secretkey'"
 	expcmds := mockSQLDB{
-		"DROP TABLE IF EXISTS \"testschema\".\"test_prefix_tablename\"",
-		"CREATE TABLE \"testschema\".\"test_prefix_tablename\" (field1 type1  NOT NULL, field2 type2 SORTKEY PRIMARY KEY, field3 type3 DEFAULT defaultval3 )",
+		`DROP TABLE IF EXISTS "testschema"."test_prefix_tablename"`,
+		`CREATE TABLE "testschema"."test_prefix_tablename" (field1 type1  NOT NULL, field2 type2 SORTKEY PRIMARY KEY, field3 type3 DEFAULT defaultval3 )`,
 		copycmd,
-		"DROP TABLE IF EXISTS \"testschema\".\"tablename\"; ALTER TABLE \"testschema\".\"test_prefix_tablename\" RENAME TO \"tablename\";",
+		`DROP TABLE IF EXISTS "testschema"."tablename"; ALTER TABLE "testschema"."test_prefix_tablename" RENAME TO "tablename";`,
+		`GRANT SELECT, REFERENCES ON "testschema"."tablename" TO PUBLIC`,
 	}
 	cmds := mockSQLDB([]string{})
 	mockrs := Redshift{&cmds, "accesskey", "secretkey"}

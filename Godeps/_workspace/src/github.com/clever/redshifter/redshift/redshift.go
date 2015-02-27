@@ -123,8 +123,11 @@ func (r *Redshift) RefreshTable(schema, name, prefix, file, awsRegion string, ts
 	if err := r.CopyGzipCsvDataFromS3(schema, tmptable, file, awsRegion, delim); err != nil {
 		return err
 	}
-	_, err := r.logAndExec(fmt.Sprintf(`DROP TABLE IF EXISTS "%s"."%s"; ALTER TABLE "%s"."%s" RENAME TO "%s";`,
-		schema, name, schema, tmptable, name), false)
+	if _, err := r.logAndExec(fmt.Sprintf(`DROP TABLE IF EXISTS "%s"."%s"; ALTER TABLE "%s"."%s" RENAME TO "%s";`,
+		schema, name, schema, tmptable, name), false); err != nil {
+		return err
+	}
+	_, err := r.logAndExec(fmt.Sprintf(`GRANT SELECT, REFERENCES ON "%s"."%s" TO PUBLIC`, schema, name), false)
 	return err
 }
 
