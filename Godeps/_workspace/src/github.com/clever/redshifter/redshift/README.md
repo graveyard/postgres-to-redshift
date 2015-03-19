@@ -26,7 +26,7 @@ values set in the flags.
 #### func (*Redshift) CopyGzipCsvDataFromS3
 
 ```go
-func (r *Redshift) CopyGzipCsvDataFromS3(schema, table, file, awsRegion string, delimiter rune) error
+func (r *Redshift) CopyGzipCsvDataFromS3(schema, table, file, awsRegion string, ts postgres.TableSchema, delimiter rune) error
 ```
 CopyGzipCsvDataFromS3 copies gzipped CSV data from an S3 file into a redshift
 table.
@@ -37,14 +37,6 @@ table.
 func (r *Redshift) CopyJSONDataFromS3(schema, table, file, jsonpathsFile, awsRegion string) error
 ```
 CopyJSONDataFromS3 copies JSON data present in an S3 file into a redshift table.
-
-#### func (*Redshift) RefreshTable
-
-```go
-func (r *Redshift) RefreshTable(schema, name, prefix, file, awsRegion string, ts postgres.TableSchema, delim rune) error
-```
-RefreshTable refreshes a single table by first copying gzipped CSV data into a
-temporary table and later renaming the temporary table to the original one.
 
 #### func (*Redshift) RefreshTables
 
