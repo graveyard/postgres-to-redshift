@@ -37,7 +37,7 @@ var (
 	pwd                = flag.String("redshiftpassword", "", "Password for the redshift user")
 	timeout            = flag.Duration("redshiftconnecttimeout", 10*time.Second,
 		"Timeout while connecting to Redshift. Defaults to 10 seconds.")
-	tmpprefix = flag.String("tmptableprefix", "tmp_refresh_table_",
+	tmpschema = flag.String("tmpschema", "tmp_refresh_tables",
 		"Prefix for temporary tables to ensure they don't collide with existing ones.")
 )
 
@@ -73,79 +73,77 @@ func (r *Redshift) CopyJSONDataFromS3(schema, table, file, jsonpathsFile, awsReg
 }
 
 // CopyGzipCsvDataFromS3 copies gzipped CSV data from an S3 file into a redshift table.
-func (r *Redshift) CopyGzipCsvDataFromS3(schema, table, file, awsRegion string, delimiter rune) error {
+func (r *Redshift) CopyGzipCsvDataFromS3(schema, table, file, awsRegion string, ts postgres.TableSchema, delimiter rune) error {
+	cols := []string{}
+	sort.Sort(ts)
+	for _, ci := range ts {
+		cols = append(cols, ci.Name)
+	}
 	copyCmd := fmt.Sprintf(
-		`COPY "%s"."%s" FROM '%s' WITH REGION '%s' GZIP CSV DELIMITER '%c'`,
-		schema, table, file, awsRegion, delimiter)
+		`COPY "%s"."%s" (%s) FROM '%s' WITH REGION '%s' GZIP CSV DELIMITER '%c'`,
+		schema, table, strings.Join(cols, ", "), file, awsRegion, delimiter)
 	copyCmd += " IGNOREHEADER 0 ACCEPTINVCHARS TRUNCATECOLUMNS TRIMBLANKS BLANKSASNULL EMPTYASNULL DATEFORMAT 'auto' ACCEPTANYDATE COMPUPDATE ON"
 	_, err := r.logAndExec(copyCmd, true)
 	return err
 }
 
-// TODO: explore adding distkey.
-func columnString(c *postgres.ColInfo) string {
-	attributes := []string{}
-	constraints := []string{}
-	if c.DefaultVal != "" {
-		attributes = append(attributes, "DEFAULT "+c.DefaultVal)
-	}
-	if c.PrimaryKey {
-		attributes = append(attributes, "SORTKEY")
-		constraints = append(constraints, "PRIMARY KEY")
-	}
-	if c.NotNull {
-		constraints = append(constraints, "NOT NULL")
-	}
-	return fmt.Sprintf("%s %s %s %s", c.Name, c.ColType, strings.Join(attributes, " "), strings.Join(constraints, " "))
-}
-
-func (r *Redshift) createTable(schema, name string, ts postgres.TableSchema) error {
-	colStrings := []string{}
-	sort.Sort(ts)
-	for _, ci := range ts {
-		colStrings = append(colStrings, columnString(ci))
-	}
-	cmd := fmt.Sprintf(`CREATE TABLE "%s"."%s" (%s)`, schema, name, strings.Join(colStrings, ", "))
+// Creates a table in tmpschema using the structure of the existing table in schema.
+func (r *Redshift) createTempTable(tmpschema, schema, name string) error {
+	cmd := fmt.Sprintf(`CREATE TABLE "%s"."%s" (LIKE "%s"."%s")`, tmpschema, name, schema, name)
 	_, err := r.logAndExec(cmd, false)
 	return err
 }
 
-// RefreshTable refreshes a single table by first copying gzipped CSV data into a temporary table
-// and later renaming the temporary table to the original one.
-func (r *Redshift) RefreshTable(schema, name, prefix, file, awsRegion string, ts postgres.TableSchema, delim rune) error {
-	tmptable := prefix + name
-	if _, err := r.logAndExec(fmt.Sprintf(`DROP TABLE IF EXISTS "%s"."%s"`, schema, tmptable), false); err != nil {
-		return err
+func (r *Redshift) refreshData(tmpschema, schema, name string) error {
+	cmds := []string{
+		"BEGIN TRANSACTION",
+		fmt.Sprintf(`DELETE FROM "%s"."%s"`, schema, name),
+		fmt.Sprintf(`INSERT INTO "%s"."%s" (SELECT * FROM "%s"."%s")`, schema, name, tmpschema, name),
+		"END TRANSACTION",
 	}
-	if err := r.createTable(schema, tmptable, ts); err != nil {
-		return err
-	}
-	if err := r.CopyGzipCsvDataFromS3(schema, tmptable, file, awsRegion, delim); err != nil {
-		return err
-	}
-	if _, err := r.logAndExec(fmt.Sprintf(`DROP TABLE IF EXISTS "%s"."%s"; ALTER TABLE "%s"."%s" RENAME TO "%s";`,
-		schema, name, schema, tmptable, name), false); err != nil {
-		return err
-	}
-	_, err := r.logAndExec(fmt.Sprintf(`GRANT SELECT, REFERENCES ON "%s"."%s" TO PUBLIC`, schema, name), false)
+	_, err := r.logAndExec(strings.Join(cmds, "; "), false)
 	return err
+}
+
+// RefreshTable refreshes a single table by first copying gzipped CSV data into a temporary table
+// and later replacing the original table's data with the one from the temporary table in an
+// atomic operation.
+func (r *Redshift) refreshTable(schema, name, tmpschema, file, awsRegion string, ts postgres.TableSchema, delim rune) error {
+	if err := r.createTempTable(tmpschema, schema, name); err != nil {
+		return err
+	}
+	if err := r.CopyGzipCsvDataFromS3(tmpschema, name, file, awsRegion, ts, delim); err != nil {
+		return err
+	}
+	return r.refreshData(tmpschema, schema, name)
 }
 
 // RefreshTables refreshes multiple tables in parallel and returns an error if any of the copies
 // fail.
 func (r *Redshift) RefreshTables(
 	tables map[string]postgres.TableSchema, schema, s3prefix, awsRegion string, delim rune) error {
+	if _, err := r.logAndExec(fmt.Sprintf(`CREATE SCHEMA "%s"`, *tmpschema), false); err != nil {
+		return err
+	}
 	group := new(errgroup.Group)
 	for name, ts := range tables {
 		group.Add(1)
 		go func(name string, ts postgres.TableSchema) {
-			if err := r.RefreshTable(schema, name, *tmpprefix, postgres.S3Filename(s3prefix, name), awsRegion, ts, delim); err != nil {
+			if err := r.refreshTable(schema, name, *tmpschema, postgres.S3Filename(s3prefix, name), awsRegion, ts, delim); err != nil {
 				group.Error(err)
 			}
 			group.Done()
 		}(name, ts)
 	}
-	return group.Wait()
+	errs := new(errgroup.Group)
+	if err := group.Wait(); err != nil {
+		errs.Error(err)
+	}
+	if _, err := r.logAndExec(fmt.Sprintf(`DROP SCHEMA "%s" CASCADE`, *tmpschema), false); err != nil {
+		errs.Error(err)
+	}
+	// Use errs.Wait() to group the two errors into a single error object.
+	return errs.Wait()
 }
 
 // VacuumAnalyze performs VACUUM FULL; ANALYZE on the redshift database. This is useful for
