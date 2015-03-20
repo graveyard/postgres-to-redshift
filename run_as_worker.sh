@@ -5,8 +5,7 @@
 gearcmd -name postgres-to-redshift \
   -host=$GEARMAN_HOST \
   -port=$GEARMAN_PORT \
-  -parseargs=true \
-  -cmd /go/src/github.com/Clever/postgres-to-redshift/run_main.sh &
+  -cmd /usr/local/bin/postgres-to-redshift &
 pid=$!
 # When we get a SIGTERM, forward it to the child process and call wait. Note that we wait both in here
 # and below (on line 27) because when bash gets a SIGTERM bash appears to cancel the currently running
