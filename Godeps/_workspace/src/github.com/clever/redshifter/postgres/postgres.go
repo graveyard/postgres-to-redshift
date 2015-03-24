@@ -49,6 +49,11 @@ type dbQueryCopyToCloser interface {
 	CopyTo(io.WriteCloser, string, ...interface{}) (*pg.Result, error)
 }
 
+// Config is a struct used to specify configuration for the postgreSQL connection.
+type Config struct {
+	PoolSize int
+}
+
 // DB is a struct that is used to perform operations on a postgreSQL database.
 type DB struct {
 	dbQueryCopyToCloser
@@ -56,7 +61,7 @@ type DB struct {
 }
 
 // NewDB returns a DB struct initialized based on flags.
-func NewDB() *DB {
+func NewDB(cfg Config) *DB {
 	flag.Parse()
 	opt := pg.Options{
 		Host:     *host,
@@ -65,6 +70,7 @@ func NewDB() *DB {
 		Password: *pwd,
 		Database: *dbname,
 		SSL:      true,
+		PoolSize: cfg.PoolSize,
 	}
 	return &DB{pg.Connect(&opt), pathio.WriteReader}
 }

@@ -28,6 +28,16 @@ type ColInfo struct {
 ColInfo is a struct that contains information about a column in a postgreSQL
 database.
 
+#### type Config
+
+```go
+type Config struct {
+	PoolSize int
+}
+```
+
+Config is a struct used to specify configuration for the postgreSQL connection.
+
 #### type DB
 
 ```go
@@ -40,7 +50,7 @@ DB is a struct that is used to perform operations on a postgreSQL database.
 #### func  NewDB
 
 ```go
-func NewDB() *DB
+func NewDB(cfg Config) *DB
 ```
 NewDB returns a DB struct initialized based on flags.
 
