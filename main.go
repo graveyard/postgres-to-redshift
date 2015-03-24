@@ -27,7 +27,7 @@ func main() {
 	}
 	tables := strings.Split(*tablesCSV, ",")
 
-	pgdb := postgres.NewDB()
+	pgdb := postgres.NewDB(postgres.Config{PoolSize: len(tables)})
 	defer pgdb.Close()
 	tsmap, err := pgdb.GetTableSchemas(tables, "")
 	if err != nil {
