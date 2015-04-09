@@ -3,21 +3,20 @@ notify:
   email:
     recipients:
     - drone@clever.com
-  hipchat:
+  slack:
     on_failure: true
-    on_started: true
-    on_success: true
-    room: Clever-Dev-CI
-    token: {{hipchatToken}}
+    on_started: false
+    on_success: false
+    webhook_url: $$slack_webhook
 publish:
   docker:
-    branch: master
-    docker_port: 4243
-    docker_server: {{docker_server}}
-    docker_version: 0.10.0
-    email: {{docker_email}}
+    docker_server: $$docker_server
+    email: $$docker_email
     image_name: clever/postgres-to-redshift
-    password: {{docker_password}}
-    push_latest: true
+    password: $$docker_password
     registry_login: true
-    username: {{docker_username}}
+    tags:
+    - $(git rev-parse --short HEAD)
+    username: $$docker_username
+    when:
+      branch: master
