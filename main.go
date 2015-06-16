@@ -48,8 +48,10 @@ func main() {
 		if err := r.RefreshTables(tsmap, *redshiftSchema, *s3prefix, awsRegion, '|'); err != nil {
 			log.Fatal(err)
 		}
-		if err := r.VacuumAnalyze(); err != nil {
-			log.Fatal(err)
+		for _, t := range tables {
+			if err := r.VacuumAnalyzeTable(t); err != nil {
+				log.Fatal(err)
+			}
 		}
 	}
 }
