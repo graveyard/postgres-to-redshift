@@ -1,4 +1,6 @@
 image: bradrydzewski/go:1.3
+script:
+    - make test
 notify:
   email:
     recipients:
