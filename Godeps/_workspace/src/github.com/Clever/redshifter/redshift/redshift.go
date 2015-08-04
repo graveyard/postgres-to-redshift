@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/clever/redshifter/postgres"
+	"github.com/Clever/redshifter/postgres"
 	"github.com/facebookgo/errgroup"
 	"github.com/segmentio/go-env"
 )

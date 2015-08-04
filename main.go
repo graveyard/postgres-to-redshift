@@ -5,9 +5,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/clever/go-utils/flagutil"
-	"github.com/clever/redshifter/postgres"
-	"github.com/clever/redshifter/redshift"
+	"github.com/Clever/go-utils/flagutil"
+	"github.com/Clever/redshifter/postgres"
+	"github.com/Clever/redshifter/redshift"
 	"github.com/segmentio/go-env"
 )
 

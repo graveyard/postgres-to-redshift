@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/clever/redshifter/postgres"
+	"github.com/Clever/redshifter/postgres"
 	"github.com/stretchr/testify/assert"
 )
 

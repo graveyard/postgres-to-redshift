@@ -24,8 +24,8 @@ import (
 )
 
 // Reader returns an io.Reader for the specified path. The path can either be a local file path
-// or an S3 path.
-func Reader(path string) (io.Reader, error) {
+// or an S3 path. It is the caller's responsibility to close rc.
+func Reader(path string) (rc io.ReadCloser, err error) {
 	if strings.HasPrefix(path, "s3://") {
 		return s3FileReader(path)
 	}
@@ -33,7 +33,7 @@ func Reader(path string) (io.Reader, error) {
 	return os.Open(path)
 }
 
-// Write writes a byte array to the specified path. The path can be either a local file path of an
+// Write writes a byte array to the specified path. The path can be either a local file path or an
 // S3 path.
 func Write(path string, input []byte) error {
 	return WriteReader(path, bytes.NewReader(input), int64(len(input)))
@@ -49,8 +49,8 @@ func WriteReader(path string, input io.Reader, length int64) error {
 
 }
 
-// s3FileReader converts an S3Path into an io.Reader
-func s3FileReader(path string) (io.Reader, error) {
+// s3FileReader converts an S3Path into an io.ReadCloser
+func s3FileReader(path string) (io.ReadCloser, error) {
 	bucket, key, err := getS3BucketAndKey(path)
 	if err != nil {
 		return nil, err
@@ -61,6 +61,7 @@ func s3FileReader(path string) (io.Reader, error) {
 
 func writeToLocalFile(path string, input io.Reader) error {
 	file, err := os.Create(path)
+	defer file.Close()
 	if err != nil {
 		return err
 	}
