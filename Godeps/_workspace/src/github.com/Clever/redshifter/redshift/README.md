@@ -42,7 +42,7 @@ CopyJSONDataFromS3 copies JSON data present in an S3 file into a redshift table.
 
 ```go
 func (r *Redshift) RefreshTables(
-	tables map[string]postgres.TableSchema, schema, s3prefix, awsRegion string, delim rune) error
+	tables map[string]postgres.TableSchema, schema, tmpschema, s3prefix, awsRegion string, delim rune) error
 ```
 RefreshTables refreshes multiple tables in parallel and returns an error if any
 of the copies fail.

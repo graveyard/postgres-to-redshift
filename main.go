@@ -2,8 +2,10 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/Clever/go-utils/flagutil"
 	"github.com/Clever/redshifter/postgres"
@@ -45,7 +47,8 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err := r.RefreshTables(tsmap, *redshiftSchema, *s3prefix, awsRegion, '|'); err != nil {
+		tmpSchema := fmt.SPrintf("temp_schema_%s", time.Now().Unix())
+		if err := r.RefreshTables(tsmap, *redshiftSchema, tmpSchema, *s3prefix, awsRegion, '|'); err != nil {
 			log.Fatal(err)
 		}
 		if err := r.VacuumAnalyze(); err != nil {
