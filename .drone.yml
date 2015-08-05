@@ -10,7 +10,7 @@ notify:
     webhook_url: $$slack_webhook
 publish:
   docker:
-    docker_server: $$docker_server
+    docker_host: $$docker_server
     email: $$docker_email
     image_name: Clever/postgres-to-redshift
     password: $$docker_password
