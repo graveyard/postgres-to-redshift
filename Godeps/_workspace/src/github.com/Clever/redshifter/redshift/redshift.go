@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/clever/redshifter/postgres"
+	"github.com/Clever/redshifter/postgres"
 	"github.com/facebookgo/errgroup"
 	"github.com/segmentio/go-env"
 )
@@ -37,8 +37,6 @@ var (
 	pwd                = flag.String("redshiftpassword", "", "Password for the redshift user")
 	timeout            = flag.Duration("redshiftconnecttimeout", 10*time.Second,
 		"Timeout while connecting to Redshift. Defaults to 10 seconds.")
-	tmpschema = flag.String("tmpschema", "tmp_refresh_tables",
-		"Prefix for temporary tables to ensure they don't collide with existing ones.")
 )
 
 // NewRedshift returns a pointer to a new redshift object using configuration values set in the
@@ -121,15 +119,15 @@ func (r *Redshift) refreshTable(schema, name, tmpschema, file, awsRegion string,
 // RefreshTables refreshes multiple tables in parallel and returns an error if any of the copies
 // fail.
 func (r *Redshift) RefreshTables(
-	tables map[string]postgres.TableSchema, schema, s3prefix, awsRegion string, delim rune) error {
-	if _, err := r.logAndExec(fmt.Sprintf(`CREATE SCHEMA "%s"`, *tmpschema), false); err != nil {
+	tables map[string]postgres.TableSchema, schema, tmpschema, s3prefix, awsRegion string, delim rune) error {
+	if _, err := r.logAndExec(fmt.Sprintf(`CREATE SCHEMA "%s"`, tmpschema), false); err != nil {
 		return err
 	}
 	group := new(errgroup.Group)
 	for name, ts := range tables {
 		group.Add(1)
 		go func(name string, ts postgres.TableSchema) {
-			if err := r.refreshTable(schema, name, *tmpschema, postgres.S3Filename(s3prefix, name), awsRegion, ts, delim); err != nil {
+			if err := r.refreshTable(schema, name, tmpschema, postgres.S3Filename(s3prefix, name), awsRegion, ts, delim); err != nil {
 				group.Error(err)
 			}
 			group.Done()
@@ -139,7 +137,7 @@ func (r *Redshift) RefreshTables(
 	if err := group.Wait(); err != nil {
 		errs.Error(err)
 	}
-	if _, err := r.logAndExec(fmt.Sprintf(`DROP SCHEMA "%s" CASCADE`, *tmpschema), false); err != nil {
+	if _, err := r.logAndExec(fmt.Sprintf(`DROP SCHEMA "%s" CASCADE`, tmpschema), false); err != nil {
 		errs.Error(err)
 	}
 	// Use errs.Wait() to group the two errors into a single error object.
