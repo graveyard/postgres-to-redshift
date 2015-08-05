@@ -12,7 +12,7 @@ publish:
   docker:
     docker_host: $$docker_server
     email: $$docker_email
-    image_name: Clever/postgres-to-redshift
+    image_name: clever/postgres-to-redshift
     password: $$docker_password
     registry_login: true
     tags:
