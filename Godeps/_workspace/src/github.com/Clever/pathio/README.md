@@ -1,6 +1,6 @@
 # pathio
 --
-    import "gopkg.in/Clever/pathio.v1"
+    import "github.com/Clever/pathio"
 
 Package pathio is a package that allows writing to and reading from different
 types of paths transparently. It supports two types of paths:
@@ -19,10 +19,10 @@ Note that using s3 paths requires setting three environment variables
 #### func  Reader
 
 ```go
-func Reader(path string) (rc io.ReadCloser, err error)
+func Reader(path string) (io.Reader, error)
 ```
 Reader returns an io.Reader for the specified path. The path can either be a
-local file path or an S3 path. It is the caller's responsibility to close rc.
+local file path or an S3 path.
 
 #### func  Write
 
@@ -30,7 +30,7 @@ local file path or an S3 path. It is the caller's responsibility to close rc.
 func Write(path string, input []byte) error
 ```
 Write writes a byte array to the specified path. The path can be either a local
-file path or an S3 path.
+file path of an S3 path.
 
 #### func  WriteReader
 
