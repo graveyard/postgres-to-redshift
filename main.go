@@ -51,8 +51,5 @@ func main() {
 		if err := r.RefreshTables(tsmap, *redshiftSchema, tmpSchema, *s3prefix, awsRegion, '|'); err != nil {
 			log.Fatal(err)
 		}
-		if err := r.VacuumAnalyze(); err != nil {
-			log.Fatal(err)
-		}
 	}
 }

@@ -82,10 +82,21 @@ func TestRefreshTable(t *testing.T) {
 		fmt.Sprintf(`CREATE TABLE "%s"."%s" (LIKE "%s"."%s")`, tmpschema, name, schema, name),
 		copycmd,
 		strings.Join(datarefreshcmds, "; "),
+		`VACUUM FULL "testschema"."tablename"; ANALYZE "testschema"."tablename"`,
 	}
 	cmds := mockSQLDB([]string{})
 	mockrs := Redshift{&cmds, "accesskey", "secretkey"}
 	err := mockrs.refreshTable(schema, name, tmpschema, file, awsRegion, ts, delim)
+	assert.NoError(t, err)
+	assert.Equal(t, expcmds, cmds)
+}
+
+func TestVacuumAnalyzeTable(t *testing.T) {
+	schema, table := "testschema", "tablename"
+	expcmds := mockSQLDB{`VACUUM FULL "testschema"."tablename"; ANALYZE "testschema"."tablename"`}
+	cmds := mockSQLDB([]string{})
+	mockrs := Redshift{&cmds, "accesskey", "secretkey"}
+	err := mockrs.VacuumAnalyzeTable(schema, table)
 	assert.NoError(t, err)
 	assert.Equal(t, expcmds, cmds)
 }

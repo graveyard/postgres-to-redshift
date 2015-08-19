@@ -113,7 +113,10 @@ func (r *Redshift) refreshTable(schema, name, tmpschema, file, awsRegion string,
 	if err := r.CopyGzipCsvDataFromS3(tmpschema, name, file, awsRegion, ts, delim); err != nil {
 		return err
 	}
-	return r.refreshData(tmpschema, schema, name)
+	if err := r.refreshData(tmpschema, schema, name); err != nil {
+		return err
+	}
+	return r.VacuumAnalyzeTable(schema, name)
 }
 
 // RefreshTables refreshes multiple tables in parallel and returns an error if any of the copies
@@ -148,5 +151,12 @@ func (r *Redshift) RefreshTables(
 // recreating the indices after a database has been modified and updating the query planner.
 func (r *Redshift) VacuumAnalyze() error {
 	_, err := r.logAndExec("VACUUM FULL; ANALYZE", false)
+	return err
+}
+
+// VacuumAnalyzeTable performs VACUUM FULL; ANALYZE on a specific table. This is useful for
+// recreating the indices after a database has been modified and updating the query planner.
+func (r *Redshift) VacuumAnalyzeTable(schema, table string) error {
+	_, err := r.logAndExec(fmt.Sprintf(`VACUUM FULL "%s"."%s"; ANALYZE "%s"."%s"`, schema, table, schema, table), false)
 	return err
 }
