@@ -9,6 +9,11 @@ notify:
     on_success: false
     webhook_url: $$slack_webhook
 publish:
+  catapult:
+    url: $$catapult_url
+    application: "postgres-to-redshift"
+    when:
+      branch: master
   docker:
     docker_host: $$docker_server
     email: $$docker_email
