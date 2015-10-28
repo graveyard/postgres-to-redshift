@@ -1,37 +1,36 @@
 {
-	"ImportPath": "github.com/Clever/postgres-to-redshift",
-	"GoVersion": "go1.4.2",
+	"ImportPath": "tmp/706743330",
+	"GoVersion": "go1.5.1",
+	"Packages": [
+		""
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/Clever/go-utils/flagutil",
-			"Rev": "df1b6208b0bcf671fa7d280fde185a8589dff347"
-		},
-		{
-			"ImportPath": "github.com/Clever/pathio",
-			"Rev": "d62dca8075954017067662ff21cf9311361a6dca"
+			"Rev": "abc25366fa8ee785c21141bd9d6b71efd7c5a619"
 		},
 		{
 			"ImportPath": "github.com/Clever/redshifter/postgres",
-			"Comment": "v2.1.0-10-g6e62555",
-			"Rev": "6e625556eca38f18d32fb22c0a045e5ac655b865"
+			"Comment": "v1.0.1-37-g80b7587",
+			"Rev": "80b758757e122964d910389cc6f4c33b4937d5f0"
 		},
 		{
 			"ImportPath": "github.com/Clever/redshifter/redshift",
-			"Comment": "v2.1.0-10-g6e62555",
-			"Rev": "6e625556eca38f18d32fb22c0a045e5ac655b865"
+			"Comment": "v1.0.1-37-g80b7587",
+			"Rev": "80b758757e122964d910389cc6f4c33b4937d5f0"
 		},
 		{
 			"ImportPath": "github.com/facebookgo/errgroup",
-			"Rev": "46ea9736c913dd08039fecd085b9622a499aa0ad"
+			"Rev": "91255f2c339e8e14d9960edd25f767f99cf05e5e"
 		},
 		{
 			"ImportPath": "github.com/golang/glog",
-			"Rev": "44145f04b68cf362d9c4df2182967c2275eaefed"
+			"Rev": "fca8c8854093a154ff1eb580aae10276ad6b1b5f"
 		},
 		{
 			"ImportPath": "github.com/lib/pq",
-			"Comment": "go1.0-cutoff-13-g19eeca3",
-			"Rev": "19eeca3e30d2577b1761db471ec130810e67f532"
+			"Comment": "go1.0-cutoff-61-g83c4f41",
+			"Rev": "83c4f410d0aed80a0f44bac6a576a7f2435791f3"
 		},
 		{
 			"ImportPath": "github.com/mitchellh/goamz/aws",
@@ -49,6 +48,11 @@
 		{
 			"ImportPath": "github.com/vaughan0/go-ini",
 			"Rev": "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1"
+		},
+		{
+			"ImportPath": "gopkg.in/Clever/pathio.v1",
+			"Comment": "v1.1.0",
+			"Rev": "de4e947183a362010d3fc4ed91ca1c129b5d4181"
 		},
 		{
 			"ImportPath": "gopkg.in/bufio.v1",
