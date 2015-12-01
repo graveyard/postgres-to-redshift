@@ -1,7 +1,8 @@
 SHELL := /bin/bash
 PKG := github.com/Clever/postgres-to-redshift
+PKGS := $(shell go list ./... | grep -v /vendor)
 
-.PHONY: test
+.PHONY: test vendor
 
 GOVERSION := $(shell go version | grep 1.5)
 ifeq "$(GOVERSION)" ""
@@ -26,8 +27,6 @@ $(PKG): $(GOPATH)/bin/golint
 	@echo ""
 
 
-SHELL := /bin/bash
-PKGS := $(shell go list ./... | grep -v /vendor)
 GODEP := $(GOPATH)/bin/godep
 
 $(GODEP):
