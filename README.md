@@ -24,3 +24,7 @@ godep go run main.go \
 ```
 
 In production, the binary is run on gearman using a standalone worker run as a cron job.
+
+## Vendoring
+
+Please view the [dev-handbook for instructions](https://github.com/Clever/dev-handbook/blob/master/golang/godep.md).

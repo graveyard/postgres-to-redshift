@@ -1,8 +1,8 @@
 {
-	"ImportPath": "tmp/706743330",
+	"ImportPath": "github.com/Clever/postgres-to-redshift",
 	"GoVersion": "go1.5.1",
 	"Packages": [
-		""
+		"github.com/Clever/postgres-to-redshift"
 	],
 	"Deps": [
 		{
