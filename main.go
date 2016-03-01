@@ -47,7 +47,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		tmpSchema := fmt.Sprintf("temp_schema_%s", time.Now().Unix())
+		tmpSchema := fmt.Sprintf("temp_schema_%d", time.Now().Unix())
 		if err := r.RefreshTables(tsmap, *redshiftSchema, tmpSchema, *s3prefix, awsRegion, '|'); err != nil {
 			log.Fatal(err)
 		}
