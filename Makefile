@@ -5,7 +5,7 @@ include golang.mk
 SHELL := /bin/bash
 PKG := github.com/Clever/postgres-to-redshift
 PKGS := $(shell go list ./... | grep -v /vendor)
-EXECUTABLE := $(basename $(PKG))
+EXECUTABLE := $(shell basename $(PKG))
 $(eval $(call golang-version-check,1.5))
 
 all: test build
