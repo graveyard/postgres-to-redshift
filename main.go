@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/Clever/go-utils/flagutil"
-	"github.com/Clever/redshifter/postgres"
-	"github.com/Clever/redshifter/redshift"
+	"github.com/Clever/postgres-to-redshift/postgres"
+	"github.com/Clever/postgres-to-redshift/redshift"
 	"github.com/segmentio/go-env"
 )
 
