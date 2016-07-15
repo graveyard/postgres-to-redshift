@@ -1,6 +1,6 @@
 # postgres
 --
-    import "github.com/Clever/redshifter/postgres"
+    import "github.com/Clever/postgres-to-redshift/postgres"
 
 
 ## Usage
