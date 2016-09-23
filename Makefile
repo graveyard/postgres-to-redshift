@@ -6,7 +6,7 @@ SHELL := /bin/bash
 PKG := github.com/Clever/postgres-to-redshift
 PKGS := $(shell go list ./... | grep -v /vendor)
 EXECUTABLE := $(shell basename $(PKG))
-$(eval $(call golang-version-check,1.6))
+$(eval $(call golang-version-check,1.7))
 
 all: test build
 
