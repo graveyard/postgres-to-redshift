@@ -11,7 +11,7 @@ notify:
 publish:
   catapult:
     url: $$catapult_url
-    application: "postgres-to-redshift"
+    application: postgres-to-redshift
     when:
       branch: master
   docker:
@@ -25,3 +25,4 @@ publish:
     username: $$docker_username
     when:
       branch: master
+  report_card: {}
