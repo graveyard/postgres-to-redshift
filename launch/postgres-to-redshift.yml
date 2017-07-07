@@ -1,9 +1,11 @@
 run:
   type: docker
 env:
-  - AWS_REGION
-  - AWS_ACCESS_KEY_ID
-  - AWS_SECRET_ACCESS_KEY
+- AWS_REGION
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
 dependencies:
 - gearmand
-team: "eng-ip"
+team: eng-ip
+resources:
+  cpu: 0.0  # no CPU to improve resource usage (https://clever.atlassian.net/browse/INFRA-2120)
