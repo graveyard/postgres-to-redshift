@@ -1,0 +1,50 @@
+
+# Gopkg.toml example
+#
+# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# for detailed Gopkg.toml documentation.
+#
+# required = ["github.com/user/thing/cmd/thing"]
+# ignored = ["github.com/user/project/pkgX", "bitbucket.org/user/project/pkgA/pkgY"]
+#
+# [[constraint]]
+#   name = "github.com/user/project"
+#   version = "1.0.0"
+#
+# [[constraint]]
+#   name = "github.com/user/project2"
+#   branch = "dev"
+#   source = "github.com/myfork/project2"
+#
+# [[override]]
+#  name = "github.com/x/y"
+#  version = "2.4.0"
+
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/Clever/go-utils"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/Clever/postgres-to-redshift"
+
+[[constraint]]
+  name = "github.com/facebookgo/errgroup"
+
+[[constraint]]
+  name = "github.com/lib/pq"
+
+[[constraint]]
+  name = "github.com/segmentio/go-env"
+
+[[constraint]]
+  name = "github.com/stretchr/testify"
+
+[[constraint]]
+  name = "gopkg.in/Clever/pathio.v1"
+  version = "1.1.0"
+
+[[constraint]]
+  name = "gopkg.in/pg.v2"
+  version = "2.1.0"
