@@ -8,12 +8,6 @@
   revision = "abc25366fa8ee785c21141bd9d6b71efd7c5a619"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/Clever/postgres-to-redshift"
-  packages = ["postgres","redshift"]
-  revision = "c3ef1890abe97fb2e5869cfb8b318711fd1af549"
-
-[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "5215b55f46b2b919f50a1df0eaa5886afe4e3b3d"
@@ -82,6 +76,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f3f1c9b6e58c65f411345afd42700f1a0775a9b7fc034e82d0d0d6a2c9cbb9a1"
+  inputs-digest = "3c69a2c41c90471e8f82609bbd4c882ac5efb1277b553f884e1133eb6659c78c"
   solver-name = "gps-cdcl"
   solver-version = 1
