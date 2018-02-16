@@ -26,10 +26,6 @@
   name = "github.com/Clever/go-utils"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/Clever/postgres-to-redshift"
-
-[[constraint]]
   name = "github.com/facebookgo/errgroup"
 
 [[constraint]]
